@@ -2,7 +2,7 @@ Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.1
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.gz
@@ -10,6 +10,8 @@ Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.gz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
+Source4:	%{name}-mysql.sql
+Source5:	%{name}-pgsql.sql
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-gcc33.patch
 Patch2:		%{name}-nolibs.patch
@@ -99,6 +101,8 @@ install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d},/var/log/radacct
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/radius
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
+install %{SOURCE4} mysql.sql
+install %{SOURCE5} pgsql.sql
 
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
@@ -132,7 +136,7 @@ fi
 
 %files -f radius.lang
 %defattr(644,root,root,755)
-%doc {ChangeLog,README*}
+%doc {ChangeLog,README*,*.sql}
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/pam.d/radius
 %attr(755,root,root) %{_bindir}/*
