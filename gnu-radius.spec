@@ -70,18 +70,28 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
   zablokowaæ podwójne logowania.
 
 %package devel
-Summary:	headers for GNU Radius
+Summary:	Headers for GNU Radius
+Summary(pl):	Pliki nag³ówkowe bibliotek GNU Radius
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
-headers for GNU Radius.
+Headers for GNU Radius.
+
+%description devel -l pl
+Pliki nag³ówkowe bibliotek GNU Radius
 
 %package static
-Summary:	static libraries for GNU Radius
+Summary:	Static GNU Radius libraries
+Summary(pl):	Statyczne biblioteki GNU Radius
 Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-static libraries for GNU Radius.
+GNU Radius static libraries.
+
+%description static -l pl
+Statyczne biblioteki GNU Radius.
 
 %prep
 %setup -q -n radius-%{version}
@@ -158,6 +168,7 @@ fi
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/dict
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/dictionary
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/pam.d/radius
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/radius
@@ -170,13 +181,13 @@ fi
 %{_datadir}/radius
 %{_mandir}/*/*
 %{_infodir}/*.info*
-%{_libdir}/*.so.*
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/radius/
-%{_libdir}/*.la
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/lib*.la
+%{_includedir}/radius
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/*.a
+%{_libdir}/lib*.a
