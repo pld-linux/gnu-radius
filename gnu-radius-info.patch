@@ -1,0 +1,14 @@
+--- radius-1.1/doc/texinfo/radius.texi.orig	2003-07-20 22:38:15.000000000 +0200
++++ radius-1.1/doc/texinfo/radius.texi	2003-10-21 21:44:10.973972944 +0200
+@@ -55,9 +55,9 @@
+ @end quotation
+ @end copying
+ 
+-@dircategory GNU radius
++@dircategory Miscellaneos:
+ @direntry
+-* Radius: (radius).     The GNU Radius
++* Radius: (radius).			The GNU Radius
+ @end direntry
+ 
+ 
