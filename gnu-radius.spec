@@ -1,12 +1,12 @@
 Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.1
-Release:	3
+Version:	1.2
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
-Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.gz
-# Source0-md5:	78ac1582afaee5ca438841eb28c1e7ce
+Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
+# Source0-md5:	99b5e96118bc79178317eb72819d7027
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
@@ -16,19 +16,18 @@ Patch0:		%{name}-info.patch
 Patch1:		%{name}-gcc33.patch
 Patch2:		%{name}-nolibs.patch
 URL:		http://www.gnu.org/software/radius/
+BuildRequires:	autoconf >= 2.57
+BuildRequires:	automake
+BuildRequires:	gettext-devel
+BuildRequires:	groff
+BuildRequires:	guile-devel >= 1.4
+BuildRequires:	libtool
 BuildRequires:	m4
 BuildRequires:	mysql-devel
 BuildRequires:	pam-devel
 BuildRequires:	postgresql-devel
-BuildRequires:	guile-devel
-BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake
-BuildRequires:	gettext-devel
-BuildRequires:	libtool
-BuildRequires:	guile-devel >= 1.4
 BuildRequires:	readline-devel
 BuildRequires:	texinfo
-BuildRequires:	groff
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
@@ -83,11 +82,12 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
 %{__autoheader}
 %{__automake}
 %configure \
+	--with-dbm \
 	--with-mysql \
 	--with-postgresql \
 	--enable-pam \
-	--enable-shadow \
-  --with-dbm
+	--enable-shadow
+
 %{__make}
 
 %install
@@ -144,15 +144,13 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/realms
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/client.conf
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/clients
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/rewrite
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/sqlserver
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/huntgroups
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/hints
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/config
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/access.deny
-%config %{_sysconfdir}/raddb/dict
-%config %{_sysconfdir}/raddb/dictionary
-%config %{_sysconfdir}/raddb/menus
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/dict
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/dictionary
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/pam.d/radius
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
