@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# radiusd	Start/Stop Radius daemon.
+#
+# chkconfig:	345 98 10
+#
+# description:	Remote Authentication Dail In User Service
+#
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+# NLS
+NLS_DOMAIN="rc-scripts"
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		# nls "ERROR: Networking is down. %s can't be run." rarpd
+		msg_network_down "GNU Radius Server"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+RETVAL=0
+case "$1" in
+  start)
+	if [ ! -f /var/lock/subsys/radius ]; then
+		msg_starting "GNU Radius Server"
+		daemon radiusd -y
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/radius
+	else
+		msg_already_running "GNU Radius Server"
+	fi
+	;;
+  stop)
+	if [ -f /var/lock/subsys/radius ]; then
+		msg_stopping "GNU Radius Server"
+		killproc radiusd
+		rm -f /var/lock/subsys/radius >/dev/null 2>&1
+	else
+		msg_not_running "GNU Radius Server"
+	fi
+	;;
+  status)
+	status radiusd
+	exit $?
+	;;
+  restart|force-reload)
+	$0 stop
+	$0 start
+	exit $?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
