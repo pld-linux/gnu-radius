@@ -1,4 +1,5 @@
 Summary:	GNU RADIUS Server
+Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.1
 Release:	1
@@ -15,6 +16,7 @@ Source3:	%{name}.logrotate
 #Patch3:		%{name}-makefile.patch
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	m4
+PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
 Requires:	logrotate
@@ -38,15 +40,31 @@ RADIUS server with a lot of functions. Short overview:
 - Supports Simultaneous-Use = X parameter. Yes, this means that you
   can now prevent double logins!.
 
+%description -l pl
+Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
+- obs³uga PAM,
+- uwierzytelnianie z u¿yciem SQL,
+- obs³uga dostêpu opartego na huntgroups,
+- wiele wpisów DEFAULT w pliku u¿ytkowników,
+- wszystkie wpisy w pliku u¿ytkowników mog± opcjonalnie
+  "przepuszczaæ",
+- buforowanie wszystkich plików konfiguracyjnych w pamiêci,
+- przechowywanie listy zalogowanych u¿ytkowników (plik radutmp),
+- program "radwho", który mo¿na zainstalowaæ jako "fingerd"
+- logowanie w formacie uniksowego pliku "wtmp" oraz szczegó³owych
+  logów RADIUS
+- obs³uga parametru Simultaneous-Use = X; tak, to oznacza, ¿e mo¿na
+  zablokowaæ podwójne logowania.
+
 %prep
-%setup  -q -n radius-%{version}
+%setup -q -n radius-%{version}
 #%patch0 -p1
 #%patch1 -p1
 #%patch2 -p1
 #%patch3 -p1
 
 %build
-%{configure}
+%configure
 %{__make}
 
 %install
@@ -64,11 +82,12 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 
+%find_lang radius
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-touch /var/log/radutmp /var/log/radwtmp
 /sbin/chkconfig --add radius
 if [ -f /var/lock/subsys/radius ]; then
 	/etc/rc.d/init.d/radius restart >&2
@@ -80,11 +99,13 @@ chmod 640 /var/log/rad{utmp,wtmp,ius.log}
 
 %preun
 if [ "$1" = "0" ]; then
-	/etc/rc.d/init.d/radius stop >&2
+	if [ -f /var/lock/subsys/radius ]; then
+		/etc/rc.d/init.d/radius stop >&2
+	fi
 	/sbin/chkconfig --del radius
 fi
 
-%files
+%files -f radius.lang
 %defattr(644,root,root,755)
 %doc {ChangeLog,README*}
 %attr(640,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/raddb/*
@@ -98,12 +119,6 @@ fi
 %attr(640,root,root) %ghost /var/log/radutmp
 %attr(640,root,root) %ghost /var/log/radwtmp
 %attr(640,root,root) %ghost /var/log/radius.log
-
-%{_infodir}/*
-%lang(es) %{_prefix}/share/locale/es/LC_MESSAGES/radius.mo
-%lang(no) %{_prefix}/share/locale/no/LC_MESSAGES/radius.mo
-%lang(pl) %{_prefix}/share/locale/pl/LC_MESSAGES/radius.mo
-%lang(ru) %{_prefix}/share/locale/ru/LC_MESSAGES/radius.mo
-%{_prefix}/share/radius/*
-
+%{_datadir}/radius
 %{_mandir}/*/*
+%{_infodir}/*.info*
