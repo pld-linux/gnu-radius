@@ -137,14 +137,29 @@ fi
 %files -f radius.lang
 %defattr(644,root,root,755)
 %doc {ChangeLog,README*,*.sql}
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/*
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/naslist
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/nas.rc
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/nastypes
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/users
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/realms
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/client.conf
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/clients
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/rewrite
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/sqlserver
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/huntgroups
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/hints
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/config
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/access.deny
+%config %{_sysconfdir}/raddb/dict
+%config %{_sysconfdir}/raddb/dictionary
+%config %{_sysconfdir}/raddb/menus
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/pam.d/radius
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/radius
 %attr(640,root,root) /etc/logrotate.d/radius
 %attr(750,root,root) %dir /var/log/radacct
-%attr(750,root,root) %dir %{_sysconfdir}/raddb
+%dir %{_sysconfdir}/raddb
 %attr(640,root,root) %ghost /var/log/radutmp
 %attr(640,root,root) %ghost /var/log/radwtmp
 %attr(640,root,root) %ghost /var/log/radius.log
