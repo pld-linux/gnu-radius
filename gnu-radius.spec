@@ -5,20 +5,17 @@
 Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.2
+Version:	1.3
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
-# Source0-md5:	99b5e96118bc79178317eb72819d7027
+# Source0-md5:	8bf4ebdc94415d8a25949b12aa04a337
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
 Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
-Patch0:		%{name}-info.patch
-Patch1:		%{name}-gcc33.patch
-Patch2:		%{name}-nolibs.patch
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
@@ -72,19 +69,25 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
 - obs³uga parametru Simultaneous-Use = X; tak, to oznacza, ¿e mo¿na
   zablokowaæ podwójne logowania.
 
+%package devel
+Summary:	headers for GNU Radius
+Group:	Development/Libraries
+
+%description devel
+headers for GNU Radius.
+
+%package static
+Summary:	static libraries for GNU Radius
+Group:	Development/Libraries
+
+%description static
+static libraries for GNU Radius.
+
+
 %prep
 %setup -q -n radius-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
-%{__gettextize}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
 %configure \
 	--with-dbm \
 	--with-mysql \
@@ -168,3 +171,11 @@ fi
 %{_datadir}/radius
 %{_mandir}/*/*
 %{_infodir}/*.info*
+%{_libdir}/*.so.*
+
+%files devel
+%{_includedir}/radius/
+%{_libdir}/*.la
+
+%files static
+%{_libdir}/*.a
