@@ -1,4 +1,7 @@
-# TODO: CAN-2004-0849
+# TODO:
+# - SECURITY: http://securitytracker.com/alerts/2004/Sep/1011286.html
+#   (not vulnerable without --with-snmp)  CAN-2004-0849
+#
 Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
