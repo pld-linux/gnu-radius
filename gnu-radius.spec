@@ -1,3 +1,4 @@
+# TODO: CAN-2004-0849
 Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
