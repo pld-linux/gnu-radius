@@ -26,6 +26,7 @@ BuildRequires:	libtool
 BuildRequires:	guile-devel >= 1.4
 BuildRequires:	readline-devel
 BuildRequires:	texinfo
+BuildRequires:	groff
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
