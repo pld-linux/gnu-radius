@@ -83,7 +83,6 @@ Group:	Development/Libraries
 %description static
 static libraries for GNU Radius.
 
-
 %prep
 %setup -q -n radius-%{version}
 
@@ -100,10 +99,10 @@ static libraries for GNU Radius.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d},/var/log/radacct} \
-	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_mandir}/man{1,5,8},%{_sysconfdir}/raddb}
+	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_mandir}/man{1,5,8},%{_sysconfdir}/raddb,%{_libdir}}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/radius
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
