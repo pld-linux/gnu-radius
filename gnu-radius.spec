@@ -2,7 +2,7 @@ Summary:	GNU RADIUS Server
 Summary(pl):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.gz
@@ -13,11 +13,12 @@ Source3:	%{name}.logrotate
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-gcc33.patch
 Patch2:		%{name}-nolibs.patch
-#Patch0:		%{name}-DESTDIR.patch
-#Patch1:		%{name}-prefix.patch
-#Patch2:		%{name}-buff_over_fix.patch
-#Patch3:		%{name}-makefile.patch
 URL:		http://www.gnu.org/software/radius/
+BuildRequires:	m4
+BuildRequires:	mysql-devel
+BuildRequires:	pam-devel
+BuildRequires:	postgresql-devel
+BuildRequires:	guile-devel
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
 BuildRequires:	gettext-devel
@@ -78,7 +79,12 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%configure
+%configure \
+	--with-mysql \
+	--with-postgresql \
+	--enable-pam \
+	--enable-shadow \
+  --with-dbm
 %{__make}
 
 %install
