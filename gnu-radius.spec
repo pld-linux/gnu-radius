@@ -10,12 +10,21 @@ Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.gz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
+Patch0:		%{name}-info.patch
+Patch1:		%{name}-gcc33.patch
+Patch2:		%{name}-nolibs.patch
 #Patch0:		%{name}-DESTDIR.patch
 #Patch1:		%{name}-prefix.patch
 #Patch2:		%{name}-buff_over_fix.patch
 #Patch3:		%{name}-makefile.patch
 URL:		http://www.gnu.org/software/radius/
-BuildRequires:	m4
+BuildRequires:	autoconf >= 2.57
+BuildRequires:	automake
+BuildRequires:	gettext-devel
+BuildRequires:	libtool
+BuildRequires:	guile-devel >= 1.4
+BuildRequires:	readline-devel
+BuildRequires:	texinfo
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
@@ -58,19 +67,24 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
 
 %prep
 %setup -q -n radius-%{version}
-#%patch0 -p1
-#%patch1 -p1
-#%patch2 -p1
-#%patch3 -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
+%{__gettextize}
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/{raddb,logrotate.d,rc.d/init.d,pam.d},var/log/radacct} \
-	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_mandir}/man{1,5,8}}
+install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d},/var/log/radacct} \
+	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_mandir}/man{1,5,8},%{_sysconfdir}/raddb}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -88,6 +102,7 @@ touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 rm -rf $RPM_BUILD_ROOT
 
 %post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
 /sbin/chkconfig --add radius
 if [ -f /var/lock/subsys/radius ]; then
 	/etc/rc.d/init.d/radius restart >&2
@@ -105,10 +120,13 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del radius
 fi
 
+%postun
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+
 %files -f radius.lang
 %defattr(644,root,root,755)
 %doc {ChangeLog,README*}
-%attr(640,root,root) %config %verify(not size mtime md5) %{_sysconfdir}/raddb/*
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/raddb/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/pam.d/radius
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
