@@ -71,14 +71,14 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
 
 %package devel
 Summary:	headers for GNU Radius
-Group:	Development/Libraries
+Group:		Development/Libraries
 
 %description devel
 headers for GNU Radius.
 
 %package static
 Summary:	static libraries for GNU Radius
-Group:	Development/Libraries
+Group:		Development/Libraries
 
 %description static
 static libraries for GNU Radius.
@@ -173,8 +173,10 @@ fi
 %{_libdir}/*.so.*
 
 %files devel
+%defattr(644,root,root,755)
 %{_includedir}/radius/
 %{_libdir}/*.la
 
 %files static
+%defattr(644,root,root,755)
 %{_libdir}/*.a
