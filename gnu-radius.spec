@@ -13,8 +13,6 @@ Source3:	%{name}.logrotate
 Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
 URL:		http://www.gnu.org/software/radius/
-BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake
 BuildRequires:	gettext-devel
 BuildRequires:	groff
 BuildRequires:	guile-devel >= 1.4
