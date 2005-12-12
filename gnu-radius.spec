@@ -23,11 +23,11 @@ BuildRequires:	pam-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	readline-devel
 BuildRequires:	texinfo
-Requires:	rc-scripts
-Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
+Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
 Requires:	pam >= 0.77.3
+Requires:	rc-scripts
 Provides:	radius
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	radius
