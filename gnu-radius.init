@@ -52,13 +52,17 @@ case "$1" in
 	status radiusd
 	exit $?
 	;;
+	reload)
+	msg_reloading "GNU Radius Server"
+	killproc radiusd -HUP
+	;;
   restart|force-reload)
 	$0 stop
 	$0 start
 	exit $?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
 	exit 3
 esac
 
