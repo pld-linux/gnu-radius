@@ -1,5 +1,5 @@
 Summary:	GNU RADIUS Server
-Summary(pl):	Serwer GNU RADIUS
+Summary(pl.UTF-8):   Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.3
 Release:	1
@@ -47,44 +47,44 @@ RADIUS server with a lot of functions. Short overview:
 - Supports Simultaneous-Use = X parameter. Yes, this means that you
   can now prevent double logins!.
 
-%description -l pl
-Serwer RADIUS z wieloma funkcjami. Krótki przegl±d:
-- obs³uga PAM,
-- uwierzytelnianie z u¿yciem SQL,
-- obs³uga dostêpu opartego na huntgroups,
-- wiele wpisów DEFAULT w pliku u¿ytkowników,
-- wszystkie wpisy w pliku u¿ytkowników mog± opcjonalnie
-  "przepuszczaæ",
-- buforowanie wszystkich plików konfiguracyjnych w pamiêci,
-- przechowywanie listy zalogowanych u¿ytkowników (plik radutmp),
-- program "radwho", który mo¿na zainstalowaæ jako "fingerd"
-- logowanie w formacie uniksowego pliku "wtmp" oraz szczegó³owych
-  logów RADIUS
-- obs³uga parametru Simultaneous-Use = X; tak, to oznacza, ¿e mo¿na
-  zablokowaæ podwójne logowania.
+%description -l pl.UTF-8
+Serwer RADIUS z wieloma funkcjami. KrÃ³tki przeglÄ…d:
+- obsÅ‚uga PAM,
+- uwierzytelnianie z uÅ¼yciem SQL,
+- obsÅ‚uga dostÄ™pu opartego na huntgroups,
+- wiele wpisÃ³w DEFAULT w pliku uÅ¼ytkownikÃ³w,
+- wszystkie wpisy w pliku uÅ¼ytkownikÃ³w mogÄ… opcjonalnie
+  "przepuszczaÄ‡",
+- buforowanie wszystkich plikÃ³w konfiguracyjnych w pamiÄ™ci,
+- przechowywanie listy zalogowanych uÅ¼ytkownikÃ³w (plik radutmp),
+- program "radwho", ktÃ³ry moÅ¼na zainstalowaÄ‡ jako "fingerd"
+- logowanie w formacie uniksowego pliku "wtmp" oraz szczegÃ³Å‚owych
+  logÃ³w RADIUS
+- obsÅ‚uga parametru Simultaneous-Use = X; tak, to oznacza, Å¼e moÅ¼na
+  zablokowaÄ‡ podwÃ³jne logowania.
 
 %package devel
 Summary:	Headers for GNU Radius
-Summary(pl):	Pliki nag³ówkowe bibliotek GNU Radius
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe bibliotek GNU Radius
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Headers for GNU Radius.
 
-%description devel -l pl
-Pliki nag³ówkowe bibliotek GNU Radius
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe bibliotek GNU Radius
 
 %package static
 Summary:	Static GNU Radius libraries
-Summary(pl):	Statyczne biblioteki GNU Radius
+Summary(pl.UTF-8):   Statyczne biblioteki GNU Radius
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 GNU Radius static libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczne biblioteki GNU Radius.
 
 %prep
