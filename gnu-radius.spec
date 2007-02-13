@@ -1,5 +1,5 @@
 Summary:	GNU RADIUS Server
-Summary(pl.UTF-8):   Serwer GNU RADIUS
+Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.3
 Release:	1
@@ -65,7 +65,7 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegląd:
 
 %package devel
 Summary:	Headers for GNU Radius
-Summary(pl.UTF-8):   Pliki nagłówkowe bibliotek GNU Radius
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek GNU Radius
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -77,7 +77,7 @@ Pliki nagłówkowe bibliotek GNU Radius
 
 %package static
 Summary:	Static GNU Radius libraries
-Summary(pl.UTF-8):   Statyczne biblioteki GNU Radius
+Summary(pl.UTF-8):	Statyczne biblioteki GNU Radius
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
