@@ -1,17 +1,23 @@
+#
+# TODO:
+# - bcond mysql and postgresql
+# - separate packages for mysql.so and postgresql.so
+
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.3
+Version:	1.4
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
-# Source0-md5:	8bf4ebdc94415d8a25949b12aa04a337
+# Source0-md5:	aba653622aa0582ca121f0a386bed934
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
 Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
+Source6:	%{name}.sysconfig
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	gettext-devel
 BuildRequires:	groff
@@ -95,6 +101,7 @@ Statyczne biblioteki GNU Radius.
 	--with-dbm \
 	--with-mysql \
 	--with-postgresql \
+	--with-sql=mysql,postgres \
 	--enable-pam \
 	--enable-shadow
 
@@ -102,7 +109,7 @@ Statyczne biblioteki GNU Radius.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d},/var/log/radacct} \
+install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d,sysconfig},/var/log/radacct} \
 	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_mandir}/man{1,5,8},%{_sysconfdir}/raddb,%{_libdir}}
 
 %{__make} install \
@@ -113,6 +120,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
 install %{SOURCE4} mysql.sql
 install %{SOURCE5} pgsql.sql
+install %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/gnu-radius
 
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
@@ -123,6 +131,7 @@ touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
 /sbin/chkconfig --add radius
 if [ -f /var/lock/subsys/radius ]; then
@@ -142,11 +151,13 @@ if [ "$1" = "0" ]; then
 fi
 
 %postun
+/sbin/ldconfig
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
 
 %files -f radius.lang
 %defattr(644,root,root,755)
 %doc {ChangeLog,README*,*.sql}
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gnu-radius
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/naslist
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/nas.rc
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/nastypes
