@@ -1,0 +1,8 @@
+# Customized setings for GNU RADIUS
+# %G expands to local time, contrary to documentation. Set the time zone here to make that work as expected.
+TZ=GMT
+export TZ
+
+# Define nice level for GNU RADIUS
+SERVICE_RUN_NICE_LEVEL="+0"
+
