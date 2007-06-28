@@ -17,6 +17,8 @@ NLS_DOMAIN="rc-scripts"
 
 . /etc/sysconfig/network
 
+. /etc/sysconfig/gnu-radius
+
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
