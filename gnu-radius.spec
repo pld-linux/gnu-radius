@@ -134,20 +134,17 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/ldconfig
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
 /sbin/chkconfig --add radius
-if [ -f /var/lock/subsys/radius ]; then
-	/etc/rc.d/init.d/radius restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/radius start\" to start radius daemon."
-fi
 touch /var/log/rad{utmp,wtmp,ius.log}
 chmod 640 /var/log/rad{utmp,wtmp,ius.log}
 
+%posttrans
+%service %{name} restart "GNU RADIUS server"
+exit 0
+
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/radius ]; then
-		/etc/rc.d/init.d/radius stop >&2
-	fi
-	/sbin/chkconfig --del radius
+	%service %{name} stop
+	/sbin/chkconfig --del %{name}
 fi
 
 %postun
