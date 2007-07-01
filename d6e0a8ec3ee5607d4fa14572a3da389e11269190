@@ -1,0 +1,3 @@
+- 1.4 [fixes CVE-2006-4181]
+- add sysconfig file
+- run ldconfig after install
