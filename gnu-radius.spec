@@ -140,13 +140,13 @@ touch /var/log/rad{utmp,wtmp,ius.log}
 chmod 640 /var/log/rad{utmp,wtmp,ius.log}
 
 %posttrans
-%service %{name} restart "GNU RADIUS server"
+%service radius restart "GNU RADIUS server"
 exit 0
 
 %preun
 if [ "$1" = "0" ]; then
-	%service %{name} stop
-	/sbin/chkconfig --del %{name}
+	%service radius stop
+	/sbin/chkconfig --del radius
 fi
 
 %postun
