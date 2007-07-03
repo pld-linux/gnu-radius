@@ -1,0 +1,33 @@
+--- radius-1.5/sql/Makefile.am.orig	2004-08-28 17:53:05.000000000 +0200
++++ radius-1.5/sql/Makefile.am	2007-07-03 19:56:08.101919606 +0200
+@@ -25,7 +25,7 @@ libsql_la_LIBADD=@SQL_LTLIBOBJS@
+ 
+ libsql_la_DEPENDENCIES = @SQL_LTLIBOBJS@
+ 
+-moddir = $(pkgdatadir)/$(VERSION)/modules
++moddir = $(pkglibdir)/$(VERSION)/modules
+ mod_LTLIBRARIES = @SQL_LOADABLE_MODULES@
+ 
+ MODFLAGS=-module -avoid-version -no-undefined -rpath $(moddir) -Wl,-Bsymbolic
+--- radius-1.5/radiusd/Makefile.am.orig	2007-06-27 14:54:21.000000000 +0200
++++ radius-1.5/radiusd/Makefile.am	2007-07-03 19:56:34.987451725 +0200
+@@ -48,7 +48,7 @@ radiusd_LDADD = @LEXLIB@ @SQLLIB@ ../snm
+ BUILT_SOURCES   = config.c rewrite.c
+ MAINTAINERCLEANFILES=config.c rewrite.c y.output
+ INCLUDES = @RADIUS_INCLUDE_PATH@ @GUILE_INCLUDES@
+-AM_CPPFLAGS=@PATHFLAGS@ -DRADIUS_DATADIR=\"$(pkgdatadir)/$(VERSION)\"
++AM_CPPFLAGS=@PATHFLAGS@ -DRADIUS_DATADIR=\"$(pkgdatadir)/$(VERSION)\" -DRADIUS_LIBDIR=\"$(pkglibdir)/$(VERSION)\"
+ EXTRA_DIST      = config.y rewrite.y .gdbinit
+ YLWRAP = $(SHELL) $(top_srcdir)/scripts/gylwrap
+ 
+--- radius-1.5/radiusd/dynload.c.orig	2007-06-27 14:54:22.000000000 +0200
++++ radius-1.5/radiusd/dynload.c	2007-07-03 19:56:45.132029832 +0200
+@@ -173,7 +173,7 @@ int
+ dynload_stmt_term(int finish, void *block_data, void *handler_data)
+ {
+ 	if (!finish) 
+-		radiusd_set_load_path (RADIUS_DATADIR "/modules");
++		radiusd_set_load_path (RADIUS_LIBDIR "/modules");
+ }
+ 
+ static int
