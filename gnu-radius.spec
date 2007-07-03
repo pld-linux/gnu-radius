@@ -1,8 +1,3 @@
-#
-# TODO:
-# - bcond mysql and postgresql
-# - separate packages for mysql.so and postgresql.so
-
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
@@ -19,10 +14,16 @@ Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
 Source6:	%{name}.sysconfig
 Patch0:		%{name}-inc.patch
+Patch1:		%{name}-pl.po-update.patch
+Patch2:		%{name}-fhs.patch
+Patch3:		%{name}-link.patch
 URL:		http://www.gnu.org/software/radius/
+BuildRequires:	autoconf >= 2.59
+BuildRequires:	automake >= 1:1.8
 BuildRequires:	gettext-devel
 BuildRequires:	groff
 BuildRequires:	guile-devel >= 1.4
+BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 BuildRequires:	m4
 BuildRequires:	mysql-devel
@@ -36,8 +37,8 @@ Requires:	logrotate
 Requires:	pam >= 0.77.3
 Requires:	rc-scripts
 Provides:	radius
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	radius
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 RADIUS server with a lot of functions. Short overview:
@@ -70,6 +71,30 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegląd:
 - obsługa parametru Simultaneous-Use = X; tak, to oznacza, że można
   zablokować podwójne logowania.
 
+%package mysql
+Summary:	MySQL support module for GNU Radius
+Summary(pl.UTF-8):	Moduł obsługi baz danych MySQL dla serwera GNU Radius
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description mysql
+MySQL support module for GNU Radius.
+
+%description mysql -l pl.UTF-8
+Moduł obsługi baz danych MySQL dla serwera GNU Radius.
+
+%package postgres
+Summary:	PostgreSQL support module for GNU Radius
+Summary(pl.UTF-8):	Moduł obsługi baz danych PostgreSQL dla serwera GNU Radius
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description postgres
+PostgreSQL support module for GNU Radius.
+
+%description postgres -l pl.UTF-8
+Moduł obsługi baz danych PostgreSQL dla serwera GNU Radius.
+
 %package devel
 Summary:	Headers for GNU Radius
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek GNU Radius
@@ -97,8 +122,18 @@ Statyczne biblioteki GNU Radius.
 %prep
 %setup -q -n radius-%{version}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+
+rm -f po/stamp-po
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4 -I db
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--with-dbm \
 	--with-mysql \
@@ -126,6 +161,8 @@ install %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/gnu-radius
 
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
+
+rm -f $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
 
 %find_lang radius
 
@@ -155,8 +192,17 @@ fi
 
 %files -f radius.lang
 %defattr(644,root,root,755)
-%doc {ChangeLog,README*,*.sql}
-%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gnu-radius
+%doc AUTHORS ChangeLog NEWS README THANKS TODO
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_libdir}/libgnuradius.so.*.*.*
+%attr(755,root,root) %{_libdir}/libradscm.so.*.*.*
+%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-1.5.so
+%dir %{_libdir}/radius
+%dir %{_libdir}/radius/%{version}
+%dir %{_libdir}/radius/%{version}/modules
+%{_datadir}/radius
+%dir %{_sysconfdir}/raddb
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/naslist
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/nas.rc
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/nastypes
@@ -172,26 +218,36 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/dict
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/raddb/dictionary
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/radius
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/radius
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gnu-radius
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/radius
 %attr(750,root,root) %dir /var/log/radacct
-%dir %{_sysconfdir}/raddb
 %attr(640,root,root) %ghost /var/log/radutmp
 %attr(640,root,root) %ghost /var/log/radwtmp
 %attr(640,root,root) %ghost /var/log/radius.log
-%{_datadir}/radius
-%{_mandir}/*/*
+%{_mandir}/man[18]/*
 %{_infodir}/*.info*
+
+%files mysql
+%defattr(644,root,root,755)
+%doc mysql.sql
+%attr(755,root,root) %{_libdir}/radius/%{version}/modules/mysql.so
+
+%files postgres
+%defattr(644,root,root,755)
+%doc pgsql.sql
+%attr(755,root,root) %{_libdir}/radius/%{version}/modules/postgres.so
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
+%attr(755,root,root) %{_libdir}/libgnuradius.so
+%attr(755,root,root) %{_libdir}/libradscm.so
+%{_libdir}/libgnuradius.la
+%{_libdir}/libradscm.la
+%{_libdir}/libservscm.a
 %{_includedir}/radius
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libgnuradius.a
+%{_libdir}/libradscm.a
