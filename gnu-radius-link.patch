@@ -1,0 +1,48 @@
+--- radius-1.5/configure.ac.orig	2007-06-29 14:35:48.000000000 +0200
++++ radius-1.5/configure.ac	2007-07-03 20:10:04.169564386 +0200
+@@ -150,9 +150,9 @@
+ AC_MSG_RESULT($LIBS)
+ 
+ ## * Checks for libraries.
+-AC_CHECK_LIB(socket, socket)
+-AC_CHECK_LIB(nsl, gethostbyaddr)
+-AC_CHECK_LIB(crypt, crypt)
++AC_SEARCH_LIBS(socket, socket)
++AC_SEARCH_LIBS(gethostbyaddr, nsl)
++AC_SEARCH_LIBS(crypt, crypt)
+ 
+ USE_LOADABLE_MODULES=no
+ if test "$enable_shared" = yes; then
+--- radius-1.5/radscm/Makefile.am.orig	2005-10-08 13:33:00.000000000 +0200
++++ radius-1.5/radscm/Makefile.am	2007-07-03 20:46:18.589477515 +0200
+@@ -61,7 +61,7 @@
+ radsession: $(srcdir)/radsession.in
+ 	sed 's,GUILE_BINDIR,$(GUILE_BINDIR),;s,SCHEMEDIR,$(schemedir),;s,PACKAGE_STRING,$(PACKAGE_STRING),' $? > $@
+ 
+-libradscm_la_LIBADD=@LIBGNURADIUS@ @LIBINTL@
++libradscm_la_LIBADD=@LIBGNURADIUS@ @LIBINTL@ @GUILE_LIBS@
+ libradscm_la_LDFLAGS = -rpath $(libdir) -version-info @VI_CURRENT@:@VI_REVISION@:@VI_AGE@
+ 
+ INCLUDES  = @RADIUS_INCLUDE_PATH@ -I$(srcdir) -I. @GUILE_INCLUDES@
+--- radius-1.5/configure.ac.orig	2007-07-03 20:48:52.042222000 +0200
++++ radius-1.5/configure.ac	2007-07-03 20:50:22.243362559 +0200
+@@ -82,7 +82,7 @@
+ 			 if test $USE_SERVER_GUILE = yes; then
+ 				AC_DEFINE(USE_SERVER_GUILE,1,
+                                     [Define this to enable Guile interface])
+-				RA_RADIUSD_LDADD(-L../radscm -lradscm ../radscm/libservscm.a $GUILE_LIBS)
++				RA_RADIUSD_LDADD(../radscm/libradscm.la ../radscm/libservscm.a $GUILE_LIBS)
+ 			 fi],
+                         [USE_GUILE=no])
+ fi
+@@ -939,8 +939,8 @@
+ #define LOCK_RELEASE(name)
+ ])
+ 
+-AC_SUBST(LIBGNURADIUS,'-L${top_builddir}/lib -lgnuradius')
+-AC_SUBST(LIBRADEXTRA,'-lradextra -L${top_builddir}/gnu -lgnu')
++AC_SUBST(LIBGNURADIUS,'${top_builddir}/lib/libgnuradius.la')
++AC_SUBST(LIBRADEXTRA,'${top_builddir}/lib/libradextra.a ${top_builddir}/gnu/libgnu.la')
+ 
+ RADIUS_INCLUDE_PATH="$RADIUS_INCLUDE_PATH $INCLUDEPATH"
+ 
