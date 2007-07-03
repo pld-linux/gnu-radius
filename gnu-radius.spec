@@ -2,7 +2,7 @@ Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.5
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Networking/Daemons
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
@@ -33,6 +33,7 @@ BuildRequires:	readline-devel
 BuildRequires:	texinfo
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	logrotate
 Requires:	pam >= 0.77.3
 Requires:	rc-scripts
@@ -95,11 +96,23 @@ PostgreSQL support module for GNU Radius.
 %description postgres -l pl.UTF-8
 Moduł obsługi baz danych PostgreSQL dla serwera GNU Radius.
 
+%package libs
+Summary:	GNU Radius libraries
+Summary(pl.UTF-8):	Biblioteki GNU Radius
+Group:		Libraries
+Conflicts:	gnu-radius < 1.5-2
+
+%description libs
+GNU Radius libraries.
+
+%description libs -l pl.UTF-8
+Biblioteki GNU Radius.
+
 %package devel
 Summary:	Headers for GNU Radius
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek GNU Radius
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Headers for GNU Radius.
@@ -170,7 +183,6 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/ldconfig
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
 /sbin/chkconfig --add radius
 touch /var/log/rad{utmp,wtmp,ius.log}
@@ -187,17 +199,16 @@ if [ "$1" = "0" ]; then
 fi
 
 %postun
-/sbin/ldconfig
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %files -f radius.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%attr(755,root,root) %{_libdir}/libgnuradius.so.*.*.*
-%attr(755,root,root) %{_libdir}/libradscm.so.*.*.*
-%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-1.5.so
 %dir %{_libdir}/radius
 %dir %{_libdir}/radius/%{version}
 %dir %{_libdir}/radius/%{version}/modules
@@ -237,6 +248,12 @@ fi
 %defattr(644,root,root,755)
 %doc pgsql.sql
 %attr(755,root,root) %{_libdir}/radius/%{version}/modules/postgres.so
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgnuradius.so.*.*.*
+%attr(755,root,root) %{_libdir}/libradscm.so.*.*.*
+%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-1.5.so
 
 %files devel
 %defattr(644,root,root,755)
