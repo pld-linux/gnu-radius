@@ -1,0 +1,53 @@
+--- radius-1.5/po/pl.po.orig	2007-06-29 14:45:35.000000000 +0200
++++ radius-1.5/po/pl.po	2007-07-03 19:22:25.350649580 +0200
+@@ -5,10 +5,10 @@
+ # 	  
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: radius 1.4.90\n"
++"Project-Id-Version: radius 1.5\n"
+ "Report-Msgid-Bugs-To: bug-radius@gnu.org\n"
+ "POT-Creation-Date: 2007-06-28 20:26+0300\n"
+-"PO-Revision-Date: 2007-06-28 16:47+0300\n"
++"PO-Revision-Date: 2007-07-02 13:14+0300\n"
+ "Last-Translator: Sergey Poznyakoff <gray@gnu.org>\n"
+ "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
+ "MIME-Version: 1.0\n"
+@@ -524,7 +524,7 @@
+ "   Niniejszy program jest wolnym oprogramowaniem; mo¿esz go\n"
+ "   rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej\n"
+ "   Licencji Publicznej GNU, wydanej przez Fundacjê Wolnego\n"
+-"   Oprogramowania - wed³ug wersji 3-ciej tej Licencji lub której¶\n"
++"   Oprogramowania - wed³ug wersji 3. tej Licencji lub której¶\n"
+ "   z pó¼niejszych wersji.\n"
+ "   \n"
+ "   Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on\n"
+@@ -3025,28 +3025,3 @@
+ msgstr[0] "zapytanie zwróci³o %d wiersz: %s"
+ msgstr[1] "zapytanie zwróci³o %d wiersze: %s"
+ msgstr[2] "zapytanie zwróci³o %d wierszy: %s"
+-
+-#~ msgid "unknown attribute %s"
+-#~ msgstr "nieznany atrybut %s"
+-
+-#~ msgid "Not enough memory\n"
+-#~ msgstr "Brak pamiêci\n"
+-
+-#~ msgid "attribute %s has unknown type"
+-#~ msgstr "atrybut %s ma nieznany typ"
+-
+-#~ msgid "send arbitrary radius packets"
+-#~ msgstr "wysy³a dowolne pakiety radiusa"
+-
+-#~ msgid ""
+-#~ "Read input from FILE. When this option is used, all unknown options in "
+-#~ "the form --VAR=VALUE are treated as variable assignments"
+-#~ msgstr ""
+-#~ "Odczyt wej¶cia z PLIKU. Po wyst±pieniu tej opcji wszystkie nieznane opcje "
+-#~ "w formie --ZMIENNA=WARTO¦Æ s± traktowane jako podstawienia"
+-
+-#~ msgid "wrong datatype: expected vector"
+-#~ msgstr "b³êdny typ danych: spodziewano wektor"
+-
+-#~ msgid "expected opcode but found %s"
+-#~ msgstr "oczekiwany kod operacji, odnaleziono %s"
