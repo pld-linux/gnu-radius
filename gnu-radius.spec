@@ -200,8 +200,8 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del radius
 fi
 
-%postun
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+%postun	-p	/sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
