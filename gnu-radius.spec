@@ -4,7 +4,7 @@ Name:		gnu-radius
 Version:	1.5
 Release:	4
 License:	GPL v3+
-Group:		Networking/Daemons
+Group:		Networking/Daemons/Radius
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
 # Source0-md5:	7975724d0dc6c2be7751f7e6836d9ff7
 Source1:	%{name}.pamd
