@@ -1,22 +1,18 @@
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.5
-Release:	4
+Version:	1.6
+Release:	1
 License:	GPL v3+
 Group:		Networking/Daemons/Radius
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
-# Source0-md5:	7975724d0dc6c2be7751f7e6836d9ff7
+# Source0-md5:	4096397dcd90331e80713fe324f037d1
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
 Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
 Source6:	%{name}.sysconfig
-Patch0:		%{name}-inc.patch
-Patch1:		%{name}-pl.po-update.patch
-Patch2:		%{name}-fhs.patch
-Patch3:		%{name}-link.patch
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.8
@@ -134,10 +130,6 @@ Statyczne biblioteki GNU Radius.
 
 %prep
 %setup -q -n radius-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 rm -f po/stamp-po
 
