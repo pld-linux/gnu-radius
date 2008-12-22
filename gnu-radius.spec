@@ -1,12 +1,12 @@
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.6
+Version:	1.6.1
 Release:	1
 License:	GPL v3+
 Group:		Networking/Daemons/Radius
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
-# Source0-md5:	4096397dcd90331e80713fe324f037d1
+# Source0-md5:	58d6b3595735d00fa211979a99e87f3d
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
@@ -135,7 +135,7 @@ rm -f po/stamp-po
 
 %build
 %{__libtoolize}
-%{__aclocal} -I m4 -I db
+%{__aclocal} -I m4 -I db -I am
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -257,6 +257,7 @@ fi
 %{_libdir}/libradscm.la
 %{_libdir}/libservscm.a
 %{_includedir}/radius
+%{_datadir}/aclocal/radius.m4
 
 %files static
 %defattr(644,root,root,755)
