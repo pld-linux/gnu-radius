@@ -259,7 +259,7 @@ fi
 %{_libdir}/libradscm.la
 %{_libdir}/libservscm.a
 %{_includedir}/radius
-%{_datadir}/aclocal/radius.m4
+%{_aclocaldir}/radius.m4
 
 %files static
 %defattr(644,root,root,755)
