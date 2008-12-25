@@ -50,6 +50,16 @@ stop() {
 	fi
 }
 
+condrestart() {
+	if [ -f /var/lock/subsys/radius ]; then
+		stop
+		start
+	else
+		msg_not_running "GNU Radius Server"
+		RETVAL=$1
+	fi
+}
+
 RETVAL=0
 case "$1" in
   start)
@@ -58,20 +68,23 @@ case "$1" in
   stop)
   	stop
 	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  reload|force-reload)
+	msg_reloading "GNU Radius Server"
+	killproc radiusd -HUP
+	;;
   status)
 	status radiusd
 	exit $?
 	;;
-	reload)
-	msg_reloading "GNU Radius Server"
-	killproc radiusd -HUP
-	;;
-  restart|force-reload)
-	stop
-	start
-	;;
   *)
-	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
 	exit 3
 esac
 
