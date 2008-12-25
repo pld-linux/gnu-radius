@@ -169,7 +169,7 @@ touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
 # fix to point to library itself, not .so link
-ln -sf $(basename $RPM_BUILD_ROOT%{_libdir}/libradscm.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libguile-gnuradius-v-1.5.so
+ln -sf $(basename $RPM_BUILD_ROOT%{_libdir}/libradscm.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libguile-gnuradius-v-%{version}.so
 
 %find_lang radius
 
@@ -246,8 +246,10 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgnuradius.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgnuradius.so.0
 %attr(755,root,root) %{_libdir}/libradscm.so.*.*.*
-%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-1.5.so
+%attr(755,root,root) %ghost %{_libdir}/libradscm.so.1
+%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)
