@@ -2,7 +2,7 @@ Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
 Version:	1.6.1
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Networking/Daemons/Radius
 Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
