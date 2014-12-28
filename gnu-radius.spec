@@ -16,7 +16,7 @@ Source6:	%{name}.sysconfig
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1:1.8
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	groff
 BuildRequires:	guile-devel >= 1.4
 BuildRequires:	libltdl-devel
