@@ -1,32 +1,35 @@
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
-Version:	1.6.1
-Release:	3
+Version:	1.7
+Release:	1
 License:	GPL v3+
 Group:		Networking/Daemons/Radius
-Source0:	ftp://ftp.gnu.org/pub/gnu/radius/radius-%{version}.tar.bz2
-# Source0-md5:	58d6b3595735d00fa211979a99e87f3d
+Source0:	https://ftp.gnu.org/gnu/radius/radius-%{version}.tar.bz2
+# Source0-md5:	fe461bdc1f143881f02caf86ec6d17d0
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.logrotate
 Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
 Source6:	%{name}.sysconfig
+Patch0:		radius-info.patch
 URL:		http://www.gnu.org/software/radius/
-BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake >= 1:1.8
-BuildRequires:	gettext-tools
+BuildRequires:	autoconf >= 2.71
+BuildRequires:	automake >= 1:1.16
+BuildRequires:	gettext-tools >= 0.21
 BuildRequires:	groff
-BuildRequires:	guile-devel >= 1.4
-BuildRequires:	libltdl-devel
-BuildRequires:	libtool
+BuildRequires:	guile-devel >= 5:2.2
+BuildRequires:	libltdl-devel >= 2:2
+BuildRequires:	libtool >= 2:2
 BuildRequires:	m4
 BuildRequires:	mysql-devel
 BuildRequires:	pam-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	readline-devel
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
+BuildRequires:	xz
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}-libs = %{version}-%{release}
@@ -131,11 +134,11 @@ Statyczne biblioteki GNU Radius.
 %prep
 %setup -q -n radius-%{version}
 
-rm -f po/stamp-po
+%{__rm} po/stamp-po
 
 %build
 %{__libtoolize}
-%{__aclocal} -I m4 -I db -I am
+%{__aclocal} -I m4 -I am -I gint
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -145,7 +148,8 @@ rm -f po/stamp-po
 	--with-postgresql \
 	--with-sql=mysql,postgres \
 	--enable-pam \
-	--enable-shadow
+	--enable-shadow \
+	--disable-silent-rules \
 
 %{__make}
 
@@ -167,7 +171,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/gnu-radius
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
 # fix to point to library itself, not .so link
 ln -sf $(basename $RPM_BUILD_ROOT%{_libdir}/libradscm.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libguile-gnuradius-v-%{version}.so
 
@@ -201,8 +205,17 @@ fi
 %files -f radius.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_bindir}/builddbm
+%attr(755,root,root) %{_bindir}/radgrep
+%attr(755,root,root) %{_bindir}/radlast
+%attr(755,root,root) %{_bindir}/radping
+%attr(755,root,root) %{_bindir}/radsession
+%attr(755,root,root) %{_bindir}/radtest
+%attr(755,root,root) %{_bindir}/radwho
+%attr(755,root,root) %{_bindir}/radzap
+%attr(755,root,root) %{_sbindir}/radauth
+%attr(755,root,root) %{_sbindir}/radctl
+%attr(755,root,root) %{_sbindir}/radiusd
 %dir %{_libdir}/radius
 %dir %{_libdir}/radius/%{version}
 %dir %{_libdir}/radius/%{version}/modules
@@ -230,34 +243,41 @@ fi
 %attr(640,root,root) %ghost /var/log/radutmp
 %attr(640,root,root) %ghost /var/log/radwtmp
 %attr(640,root,root) %ghost /var/log/radius.log
-%{_mandir}/man[18]/*
-%{_infodir}/*.info*
+%{_mandir}/man1/radgrep.1*
+%{_mandir}/man1/radlast.1*
+%{_mandir}/man1/raduse.1*
+%{_mandir}/man1/radwho.1*
+%{_mandir}/man8/builddbm.8*
+%{_mandir}/man8/radctl.8*
+%{_mandir}/man8/radiusd.8*
+%{_mandir}/man8/radping.8*
+%{_mandir}/man8/radzap.8*
+%{_infodir}/radius.info*
 
 %files mysql
 %defattr(644,root,root,755)
 %doc mysql.sql
-%attr(755,root,root) %{_libdir}/radius/%{version}/modules/mysql.so
+%{_libdir}/radius/%{version}/modules/mysql.so
 
 %files postgres
 %defattr(644,root,root,755)
 %doc pgsql.sql
-%attr(755,root,root) %{_libdir}/radius/%{version}/modules/postgres.so
+%{_libdir}/radius/%{version}/modules/postgres.so
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnuradius.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgnuradius.so.0
-%attr(755,root,root) %{_libdir}/libradscm.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libradscm.so.1
-%attr(755,root,root) %{_libdir}/libguile-gnuradius-v-%{version}.so
+%{_libdir}/libgnuradius.so.*.*.*
+%ghost %{_libdir}/libgnuradius.so.0
+%{_libdir}/libradscm.so.*.*.*
+%ghost %{_libdir}/libradscm.so.1
+%{_libdir}/libguile-gnuradius-v-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnuradius.so
-%attr(755,root,root) %{_libdir}/libradscm.so
+%{_libdir}/libgnuradius.so
+%{_libdir}/libradscm.so
 %{_libdir}/libgnuradius.la
 %{_libdir}/libradscm.la
-%{_libdir}/libservscm.a
 %{_includedir}/radius
 %{_aclocaldir}/radius.m4
 
