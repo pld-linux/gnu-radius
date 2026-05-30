@@ -1,4 +1,9 @@
-# TODO: fix dbm (BDB or gdbm) support
+# TODO:
+# - fix dbm (BDB or gdbm) support
+# - package emacs/xemacs files (for which one? lisp-path depends on installed editor)
+#   /usr/share/xemacs/site-lisp/radconf-mode.el
+#   /usr/share/xemacs/site-lisp/radius-mode.el
+#   /usr/share/xemacs/site-lisp/rewrite-mode.el
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
