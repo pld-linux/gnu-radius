@@ -1,0 +1,26 @@
+--- radius-1.7/configure.ac.orig	2025-12-11 12:41:09.000000000 +0100
++++ radius-1.7/configure.ac	2026-05-30 13:21:54.709703644 +0200
+@@ -406,9 +406,9 @@ rad_lib_dbm() {
+ 			[ AC_MSG_ERROR(can't find header dbm.h)
+ 			exit 0] )
+ 	AC_CHECK_FUNC(dbminit,,			
+-		AC_CHECK_LIB(dbm, dbminit,
++		AC_CHECK_LIB(gdbm_compat, dbminit,
+ 			[ AC_DEFINE(HAVE_LIBDBM) 
+-			  RA_RADIUSD_LDADD(-ldbm) ],
++			  RA_RADIUSD_LDADD(-lgdbm_compat) ],
+ 		 [AC_MSG_FAILURE([The requested library libdbm is not found or is unusable])])) 
+ }
+ 
+@@ -417,9 +417,9 @@ rad_lib_ndbm() {
+ 			[ AC_MSG_ERROR(can't find header ndbm.h)
+ 			exit 0] )
+ 	AC_CHECK_FUNC(dbm_open,, 					
+-		AC_CHECK_LIB(ndbm, dbm_open,
++		AC_CHECK_LIB(gdbm_compat, dbm_open,
+ 			[ AC_DEFINE(HAVE_LIBNDBM) 
+-			  RA_RADIUSD_LDADD(-lndbm) ],
++			  RA_RADIUSD_LDADD(-lgdbm_compat) ],
+ 		[AC_MSG_FAILURE([The requested library libndbm is not found or is unusable])]))
+ }
+ 

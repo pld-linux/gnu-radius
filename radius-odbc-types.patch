@@ -1,0 +1,38 @@
+--- radius-1.7/sql/odbc.c.orig	2026-05-30 13:12:00.600467814 +0200
++++ radius-1.7/sql/odbc.c	2026-05-30 13:12:03.117944068 +0200
+@@ -141,7 +141,7 @@ rad_odbc_query(struct sql_connection *co
+ 	ODBCconn        *odata;
+ 	long            result;
+ 	SQLHSTMT        stmt;
+-	SQLINTEGER      count;
++	SQLLEN          count;
+ 
+ 	if (!conn || !conn->data)
+ 		return -1;
+@@ -181,7 +181,7 @@ rad_odbc_getpwd(struct sql_connection *c
+ 	ODBCconn        *odata;
+ 	long            result;
+ 	SQLHSTMT        stmt;
+-	SQLINTEGER      size;
++	SQLLEN          size;
+ 	SQLCHAR         passwd[128];
+ 	char           *return_passwd = NULL;
+ 
+@@ -281,7 +281,7 @@ rad_odbc_exec(struct sql_connection *con
+ 	long            result;
+ 	SQLHSTMT        stmt;
+ 	SQLSMALLINT     ccount;
+-	SQLINTEGER      rcount;
++	SQLLEN          rcount;
+ 	EXEC_DATA      *data;
+ 
+ 	if (!conn || !conn->data)
+@@ -331,7 +331,7 @@ rad_odbc_column(void *data, size_t ncol)
+ {
+ 	SQLCHAR buffer[1024];
+ 	long result;
+-	SQLINTEGER      size;
++	SQLLEN          size;
+ 	EXEC_DATA *edata = (EXEC_DATA*)data;
+ 
+ 	if (!data)

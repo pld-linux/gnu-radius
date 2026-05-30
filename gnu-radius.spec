@@ -1,3 +1,4 @@
+# TODO: fix dbm (BDB or gdbm) support
 Summary:	GNU RADIUS Server
 Summary(pl.UTF-8):	Serwer GNU RADIUS
 Name:		gnu-radius
@@ -15,9 +16,14 @@ Source5:	%{name}-pgsql.sql
 Source6:	%{name}.sysconfig
 Patch0:		radius-info.patch
 Patch1:		radius-types.patch
+Patch2:		radius-odbc-types.patch
+Patch3:		radius-gdbm.patch
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	autoconf >= 2.71
 BuildRequires:	automake >= 1:1.16
+BuildRequires:	bison
+BuildRequires:	flex
+#BuildRequires:	gdbm-devel
 BuildRequires:	gettext-tools >= 0.21
 BuildRequires:	groff
 BuildRequires:	guile-devel >= 5:2.2
@@ -30,6 +36,8 @@ BuildRequires:	postgresql-devel
 BuildRequires:	readline-devel
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
+# or libiodbc-devel with --with-odbc=iodbc
+BuildRequires:	unixODBC-devel
 BuildRequires:	xz
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
@@ -84,6 +92,18 @@ MySQL support module for GNU Radius.
 %description mysql -l pl.UTF-8
 Moduł obsługi baz danych MySQL dla serwera GNU Radius.
 
+%package odbc
+Summary:	ODBC support module for GNU Radius
+Summary(pl.UTF-8):	Moduł obsługi baz danych ODBC dla serwera GNU Radius
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description odbc
+ODBC support module for GNU Radius.
+
+%description odbc -l pl.UTF-8
+Moduł obsługi baz danych ODBC dla serwera GNU Radius.
+
 %package postgres
 Summary:	PostgreSQL support module for GNU Radius
 Summary(pl.UTF-8):	Moduł obsługi baz danych PostgreSQL dla serwera GNU Radius
@@ -136,6 +156,8 @@ Statyczne biblioteki GNU Radius.
 %setup -q -n radius-%{version}
 %patch -P0 -p1
 %patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
 
 %{__rm} po/stamp-po
 
@@ -145,14 +167,19 @@ Statyczne biblioteki GNU Radius.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+# --enable-dbm=ndbm|dbm checks for dbm_open() in nbdm.h/libndbm or dbminit() in dbm.h/libdbm;
+# ndbm.h/dbm.h are gdbm headers, BDB defines dbm/ndbm compat layer in db.h,
+# so it requires patching either to use libgdbm_compat library or db.h header.
+# gdbm patch does the first.
+# ...but DBM support is broken anyway in 1.7 release.
 %configure \
-	--with-dbm \
-	--with-mysql \
-	--with-postgresql \
-	--with-sql=mysql,postgres \
+	--disable-dbm \
 	--enable-pam \
-	--enable-shadow \
 	--disable-silent-rules \
+	--enable-snmp \
+	--with-mysql \
+	--with-odbc=odbc \
+	--with-postgres
 
 %{__make}
 
@@ -164,12 +191,12 @@ install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d,sysconfig},/var/l
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/radius
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
-install %{SOURCE4} mysql.sql
-install %{SOURCE5} pgsql.sql
-install %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/gnu-radius
+cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/radius
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
+cp -p %{SOURCE4} mysql.sql
+cp -p %{SOURCE5} pgsql.sql
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/gnu-radius
 
 touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
@@ -261,6 +288,10 @@ fi
 %defattr(644,root,root,755)
 %doc mysql.sql
 %{_libdir}/radius/%{version}/modules/mysql.so
+
+%files odbc
+%defattr(644,root,root,755)
+%{_libdir}/radius/%{version}/modules/odbc.so
 
 %files postgres
 %defattr(644,root,root,755)
