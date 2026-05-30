@@ -41,7 +41,7 @@ BuildRequires:	unixODBC-devel
 BuildRequires:	xz
 Requires(post):	fileutils
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Requires:	logrotate
 Requires:	pam >= 0.77.3
 Requires:	rc-scripts
@@ -84,7 +84,7 @@ Serwer RADIUS z wieloma funkcjami. Krótki przegląd:
 Summary:	MySQL support module for GNU Radius
 Summary(pl.UTF-8):	Moduł obsługi baz danych MySQL dla serwera GNU Radius
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description mysql
 MySQL support module for GNU Radius.
@@ -96,7 +96,7 @@ Moduł obsługi baz danych MySQL dla serwera GNU Radius.
 Summary:	ODBC support module for GNU Radius
 Summary(pl.UTF-8):	Moduł obsługi baz danych ODBC dla serwera GNU Radius
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description odbc
 ODBC support module for GNU Radius.
@@ -108,7 +108,7 @@ Moduł obsługi baz danych ODBC dla serwera GNU Radius.
 Summary:	PostgreSQL support module for GNU Radius
 Summary(pl.UTF-8):	Moduł obsługi baz danych PostgreSQL dla serwera GNU Radius
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description postgres
 PostgreSQL support module for GNU Radius.
@@ -132,7 +132,7 @@ Biblioteki GNU Radius.
 Summary:	Headers for GNU Radius
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek GNU Radius
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description devel
 Headers for GNU Radius.
@@ -144,13 +144,25 @@ Pliki nagłówkowe bibliotek GNU Radius
 Summary:	Static GNU Radius libraries
 Summary(pl.UTF-8):	Statyczne biblioteki GNU Radius
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description static
 GNU Radius static libraries.
 
 %description static -l pl.UTF-8
 Statyczne biblioteki GNU Radius.
+
+%package -n pam-pam_radius
+Summary:	PAM client module for RADIUS authentication
+Summary(pl.UTF-8):	Moduł kliencki PAM do uwierzytelniania RADIUS
+Group:		Libraries
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+
+%description -n pam-pam_radius
+PAM client module for RADIUS authentication.
+
+%description -n pam-pam_radius -l pl.UTF-8
+Moduł kliencki PAM do uwierzytelniania RADIUS.
 
 %prep
 %setup -q -n radius-%{version}
@@ -173,12 +185,14 @@ Statyczne biblioteki GNU Radius.
 # gdbm patch does the first.
 # ...but DBM support is broken anyway in 1.7 release.
 %configure \
+	--enable-client \
 	--disable-dbm \
 	--enable-pam \
 	--disable-silent-rules \
 	--enable-snmp \
 	--with-mysql \
 	--with-odbc=odbc \
+	--with-pamdir=/%{_lib}/security \
 	--with-postgres
 
 %{__make}
@@ -191,6 +205,9 @@ install -d $RPM_BUILD_ROOT{/etc/{logrotate.d,rc.d/init.d,pam.d,sysconfig},/var/l
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# broken (requires radscm executable)
+%{__rm} $RPM_BUILD_ROOT%{_libexecdir}/nas.scm
+
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/radius
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/radius
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/radius
@@ -202,6 +219,8 @@ touch $RPM_BUILD_ROOT/etc/pam.d/radius
 touch $RPM_BUILD_ROOT/var/log/rad{utmp,wtmp,ius.log}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/radius/%{version}/modules/*.{la,a}
+%{__rm} $RPM_BUILD_ROOT/%{_lib}/security/pam_radius.{la,a}
+
 # fix to point to library itself, not .so link
 ln -sf $(basename $RPM_BUILD_ROOT%{_libdir}/libradscm.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libguile-gnuradius-v-%{version}.so
 
@@ -319,3 +338,7 @@ fi
 %defattr(644,root,root,755)
 %{_libdir}/libgnuradius.a
 %{_libdir}/libradscm.a
+
+%files -n pam-pam_radius
+%defattr(644,root,root,755)
+/%{_lib}/security/pam_radius.so
