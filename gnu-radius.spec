@@ -14,6 +14,7 @@ Source4:	%{name}-mysql.sql
 Source5:	%{name}-pgsql.sql
 Source6:	%{name}.sysconfig
 Patch0:		radius-info.patch
+Patch1:		radius-types.patch
 URL:		http://www.gnu.org/software/radius/
 BuildRequires:	autoconf >= 2.71
 BuildRequires:	automake >= 1:1.16
@@ -133,6 +134,8 @@ Statyczne biblioteki GNU Radius.
 
 %prep
 %setup -q -n radius-%{version}
+%patch -P0 -p1
+%patch -P1 -p1
 
 %{__rm} po/stamp-po
 

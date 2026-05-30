@@ -1,0 +1,59 @@
+--- radius-1.7/include/radius/radius.h.orig	2025-12-11 12:21:32.000000000 +0100
++++ radius-1.7/include/radius/radius.h	2026-05-30 09:26:33.493354455 +0200
+@@ -366,7 +366,7 @@ char *grad_md5crypt(const char *pw, cons
+ 
+ /* avl.c */
+ grad_avp_t *grad_avp_alloc();
+-void grad_avp_free();
++void grad_avp_free(grad_avp_t *);
+ void grad_avl_free(grad_avp_t *);
+ grad_avp_t *grad_avl_find(grad_avp_t *, int);
+ grad_avp_t *grad_avl_find_n(grad_avp_t *, int, int);
+--- radius-1.7/lib/raddb.c.orig	2025-12-11 12:21:32.000000000 +0100
++++ radius-1.7/lib/raddb.c	2026-05-30 09:27:02.319876817 +0200
+@@ -59,7 +59,7 @@ continuation_line_p(const char *str, con
+ 
+ int
+ grad_read_raddb_file(char *filename, int vital, char *delim,
+-		     int (*fun)(), void *closure)
++		     int (*fun)(void *, int, char **, grad_locus_t *), void *closure)
+ {
+ 	size_t argc;
+ 	char **argv;
+--- radius-1.7/lib/printutmp.c.orig	2025-12-11 12:21:32.000000000 +0100
++++ radius-1.7/lib/printutmp.c	2026-05-30 10:35:32.523495209 +0200
+@@ -419,7 +419,7 @@ _lookup(char *name)
+ }
+ 
+ static char *
+-parse_string0(char *fmt, format_data_t *form, int (*cond)(), void *closure)
++parse_string0(char *fmt, format_data_t *form, int (*cond)(void *, char *), void *closure)
+ {
+ 	char *p;
+ 
+--- radius-1.7/lib/users-lex.l.orig	2025-12-11 12:21:32.000000000 +0100
++++ radius-1.7/lib/users-lex.l	2026-05-30 11:01:13.543124602 +0200
+@@ -49,9 +49,9 @@
+ 
+ extern void grad_enable_rule_debug(int);
+ extern int yyerror(char *s);
+-static char *addstring();
+-static char *addquote();
+-static int preproc();
++static char *addstring(char *);
++static char *addquote(char *);
++static int preproc(void);
+ static void grow_backslash_num(grad_slist_t slist, char *text, int len,
+ 			       int base);
+ 
+--- radius-1.7/snmplib/snmp_recv.c.orig	2025-12-11 12:21:33.000000000 +0100
++++ radius-1.7/snmplib/snmp_recv.c	2026-05-30 12:25:42.482043476 +0200
+@@ -34,7 +34,7 @@
+ #include <snmp/snmp.h>
+ #include <snmp/snmp_intern.h>
+ 
+-void snmp_read();
++void snmp_read(struct snmp_session *, fd_set *);
+ 
+ int
+ snmp_query(struct snmp_session *sess, struct snmp_pdu *pdu)
